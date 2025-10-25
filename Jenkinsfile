@@ -38,7 +38,6 @@ pipeline {
                 sh '''
                 terraform init --backend-config="bucket=${env.GCS_BUCKET}" --backend-config="prefix=${params.ENVIRONMENT}"
                 '''
-                
             }
         }
 
