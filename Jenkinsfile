@@ -8,7 +8,21 @@ pipeline {
             choices: 'validate\ninit\nplan\napply\ndestroy'
         )
     }
+
+    environment {
+        GOOGLE_APPLICATION_CREDENTIALS = "${WORKSPACE}/sa-key.json"
+    }
     stages {
+        stage ('Setup GCE Auth') {
+            steps {
+                withCredentials([file(credentialsId: 'gcp-service-account-key', variable: 'SA_KEY')]) {
+                    // some block
+                    sh '''
+                        cp $SA_KEY $GOOGLE_APPLICATION_CREDENTIALS
+                    '''
+                }
+            }
+        }
 
         // Initialize terraform
         stage('init') {
