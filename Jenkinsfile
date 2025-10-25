@@ -62,6 +62,9 @@ pipeline {
                 }
             }
             steps {
+                timeout (time: 300, unit: 'SECONDS'){
+                    input message: "Do you want to Apply the changes ??? ", ok: "Yes", submitter: "sivasre,i27academy"
+                }
                 echo "Applying terraform infra"
                 sh "terraform apply -var-file=${env.TFVARS_FILE} --auto-approve"
             }
@@ -75,6 +78,9 @@ pipeline {
                 }
             }
             steps {
+                timeout (time: 300, unit: 'SECONDS'){
+                    input message: "Do you want to Apply the changes ??? ", ok: "Yes", submitter: "sivasre,i27academy"
+                }
                 echo "Destroying the terraform infra"
                 sh "terraform destroy -var-file=${env.TFVARS_FILE} --auto-approve"
             }
