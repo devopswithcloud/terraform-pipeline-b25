@@ -35,7 +35,9 @@ pipeline {
         stage('init') {
             steps {
                 echo "Initialising the terraform"
-                sh "terraform init --backend-config="bucket=${env.GCS_BUCKET}" --backend-config="prefix=${params.ENVIRONMENT}""
+                sh '''
+                terraform init --backend-config="bucket=${env.GCS_BUCKET}" --backend-config="prefix=${params.ENVIRONMENT}"
+                '''
                 
             }
         }
