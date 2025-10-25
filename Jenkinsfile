@@ -15,7 +15,9 @@ pipeline {
     }
 
     environment {
+        GCS_BUCKET = "rugged-abacus-464109-r6-iac-bucket"
         GOOGLE_APPLICATION_CREDENTIALS = "${WORKSPACE}/sa-key.json"
+        TFVARS_FILE = "${params.ENVIRONMENT}.tfvars"
     }
     stages {
         stage ('Setup GCE Auth') {
@@ -33,7 +35,8 @@ pipeline {
         stage('init') {
             steps {
                 echo "Initialising the terraform"
-                sh "terraform init"
+                sh "terraform init --backend-config="bucket=${env.GCS_BUCKET}" --backend-config="prefix=${params.ENVIRONMENT}""
+                
             }
         }
 
@@ -46,7 +49,7 @@ pipeline {
             }
             steps {
                 echo "Executing the plan for terraform"
-                sh "terraform plan"
+                sh "terraform plan -var-file=${env.TFVARS_FILE}"
             }
         }
 
@@ -59,7 +62,7 @@ pipeline {
             }
             steps {
                 echo "Applying terraform infra"
-                sh "terraform apply --auto-approve"
+                sh "terraform apply -var-file=${env.TFVARS_FILE} --auto-approve"
             }
         }
 
@@ -72,7 +75,7 @@ pipeline {
             }
             steps {
                 echo "Destroying the terraform infra"
-                // terraform destroy
+                sh "terraform destroy -var-file=${env.TFVARS_FILE} --auto-approve"
             }
         }
     }
